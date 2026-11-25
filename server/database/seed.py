@@ -1,10 +1,15 @@
+import sys
 import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import pandas as pd
 import pymysql
 from passlib.context import CryptContext
 from dotenv import load_dotenv
-from ..app.core.security import hash_password
-from ..app.core.config import settings
+from app.core.security import hash_password
+from app.core.config import settings
+
 
 load_dotenv()
 DB_CONFIG = {

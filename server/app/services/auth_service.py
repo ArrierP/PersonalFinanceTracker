@@ -8,7 +8,7 @@ from app.core.security import (
     create_access_token,
     create_refresh_token,
     decode_token,
-    get_password_hash,
+    hash_password,
     hash_token,
     verify_password,
 )
@@ -40,7 +40,7 @@ class AuthService:
             raise ConflictException(message="Email này đã được sử dụng")
 
         try:
-            hashed_pw = get_password_hash(payload.password)
+            hashed_pw = hash_password(payload.password)
             new_user_id = self.repo.create_user(
                 email=payload.email,
                 hashed_password=hashed_pw,

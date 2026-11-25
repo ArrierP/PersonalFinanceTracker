@@ -7,8 +7,8 @@ Use personal_finance_db;
 create table if not exists users (
     id int auto_increment PRIMARY key,
     email VARCHAR(255) not NULL UNIQUE,
-    password VARCHAR(20) not null,
-    full_name VARCHAR(50) not null,
+    hashed_password VARCHAR(255) not null,
+    full_name VARCHAR(100) not null,
     created_at TIMESTAMP DEFAULT current_timestamp,
     updated_at TIMESTAMP DEFAULT current_timestamp on update current_timestamp
 );
@@ -29,7 +29,7 @@ create table if not exists categories (
 create Table if not exists transactions (
     id int PRIMARY KEY auto_increment,
     user_id int not null,
-    category_id int not null,
+    category_id int null,
     amount DECIMAL(10, 2) NOT NULL,
     type ENUM('INCOME', 'EXPENSE') not NULL,
     transaction_date DATE not NULL,
@@ -38,7 +38,7 @@ create Table if not exists transactions (
     created_at TIMESTAMP DEFAULT current_timestamp,
     updated_at TIMESTAMP DEFAULT current_timestamp on update current_timestamp,
     FOREIGN KEY (user_id) REFERENCES users(id) on delete CASCADE,
-    FOREIGN KEY (category_id) REFERENCES categories(id) on delete set null,
+    FOREIGN KEY (category_id) REFERENCES categories(id) on delete restrict,
     index idx_tx_user_date (user_id, transaction_date),
     index idx_tx_user_cat (user_id, category_id),
     index idx_tx_type (type)
@@ -79,17 +79,17 @@ CREATE TABLE IF NOT EXISTS financial_snapshots (
     INDEX idx_snap_user_date (user_id, record_date)
 );
 
-create Table if not exists refresh_token (
+create Table if not exists refresh_tokens (
     id int auto_increment PRIMARY key,
     user_id int not null,
     token_hash VARCHAR(64) not NULL UNIQUE,
-    expires_at DATE not null,
+    expires_at timestamp not null,
     revoked TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT current_timestamp,
-    Foreign Key (userid) REFERENCES users(id) on delete CASCADE,
+    Foreign Key (user_id) REFERENCES users(id) on delete CASCADE,
     index idx_rt_user_id (user_id),
     index idx_rt_expires_at (expires_at) 
-)
+);
 
 INSERT IGNORE INTO categories (user_id, name, type, icon) VALUES
 -- 10 Expense Categories
