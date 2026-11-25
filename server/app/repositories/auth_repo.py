@@ -54,6 +54,7 @@ class AuthRepository:
                 SELECT id, user_id, revoked, expires_at
                 FROM refresh_tokens
                 WHERE token_hash = %s AND user_id = %s
+                FOR UPDATE
                 """,
                 (token_hash, user_id),
             )
