@@ -79,6 +79,18 @@ CREATE TABLE IF NOT EXISTS financial_snapshots (
     INDEX idx_snap_user_date (user_id, record_date)
 );
 
+create Table if not exists refresh_token (
+    id int auto_increment PRIMARY key,
+    user_id int not null,
+    token_hash VARCHAR(64) not NULL UNIQUE,
+    expires_at DATE not null,
+    revoked TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT current_timestamp,
+    Foreign Key (userid) REFERENCES users(id) on delete CASCADE,
+    index idx_rt_user_id (user_id),
+    index idx_rt_expires_at (expires_at) 
+)
+
 INSERT IGNORE INTO categories (user_id, name, type, icon) VALUES
 -- 10 Expense Categories
 (NULL, 'Rent', 'EXPENSE', 'home'),

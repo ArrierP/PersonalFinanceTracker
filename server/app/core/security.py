@@ -4,6 +4,7 @@ import jwt
 from passlib.context import CryptContext
 from .config import settings
 from .exceptions import UnauthorizedException
+import hashlib
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -50,5 +51,7 @@ def decode_token(token: str, expected_type: TokenType = "access") -> Dict[str, A
                                     else "Access Token expired.")
     except jwt.InvalidTokenError:
         raise UnauthorizedException(message="Invalid Token.")
-    
+
+def hash_token(token: str) -> str:
+    return hashlib.sha256(token.encode("utf-8")).hexdigest()    
     
