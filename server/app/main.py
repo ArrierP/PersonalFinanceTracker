@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from app.api.v1 import transactions
 from app.api.v1 import auth
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
@@ -31,8 +32,9 @@ app.add_middleware(
 
 register_exception_handlers(app)
 app.include_router(auth.router, prefix=settings.API_V1_PREFIX)
-
+app.include_router(transactions.router, prefix="/api/v1/transactions", tags=["Transactions"])
 
 @app.get("/health", tags=["Health"])
 def health_check():
     return {"status": "ok", "message": "Backend is running"}
+
